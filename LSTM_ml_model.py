@@ -115,6 +115,14 @@ print(y_test.shape)
 y_predicted = model.predict(x_test)
 y_predicted.shape
 
+# Calculate Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_predicted)
+print("Mean Squared Error (MSE):", mse)
+
+# Calculate Root Mean Squared Error (RMSE)
+rmse = np.sqrt(mse)
+print("Root Mean Squared Error (RMSE):", rmse)
+
 #compare test and predicted values
 # scaler.scale_
 
