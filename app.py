@@ -20,7 +20,7 @@ try:
         stream.write(frame.describe())
 
         stream.write(f"<span style='background-color: yellow;'>Closing Price: Final price at which {ticker} stock was traded on a given trading day</span>", unsafe_allow_html=True)
-        stream.write("<span style='background-color: yellow;'>Moving Average of x: Takes the average of all data points in a window of size x, adn repeats for all subsets of size x</span>",  unsafe_allow_html=True)
+        stream.write("<span style='background-color: yellow;'>Moving Average of x: Takes the average of all data points in a window of size x, and repeats for all subsets of size x</span>",  unsafe_allow_html=True)
 
         stream.subheader("Closing Price Over Time")
         clp = plt.figure(figsize = (14, 7))
