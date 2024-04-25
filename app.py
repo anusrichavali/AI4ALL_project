@@ -3,10 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import pandas_datareader as data
 import yfinance as yf
-import tensorflow as tf
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model # type: ignore
 import streamlit as stream
-from pandas_datareader._utils import RemoteDataError
 from sklearn.preprocessing import MinMaxScaler
 
 try:
@@ -22,7 +20,7 @@ try:
         stream.write(frame.describe())
 
         stream.write(f"<span style='background-color: yellow;'>Closing Price: Final price at which {ticker} stock was traded on a given trading day</span>", unsafe_allow_html=True)
-        stream.write("<span style='background-color: yellow;'>Moving Average of x: Takes the average of all data points in a window of size x, adn repeats for all subsets of size x</span>")
+        stream.write("<span style='background-color: yellow;'>Moving Average of x: Takes the average of all data points in a window of size x, adn repeats for all subsets of size x</span>",  unsafe_allow_html=True)
 
         stream.subheader("Closing Price Over Time")
         clp = plt.figure(figsize = (14, 7))
@@ -30,19 +28,22 @@ try:
         stream.pyplot(clp)
 
         stream.subheader("Closing Price Over Time w/ Moving Average of 100")
+        stream.write("The blue line represents the closing price over time. The green line represents the closing price over with with a moving average of 100.")
         moving_av_100 = frame.Close.rolling(100).mean()
         clp2 = plt.figure(figsize = (14, 7))
-        plt.plot(moving_av_100)
+        plt.plot(moving_av_100, 'g')
         plt.plot(frame.Close)
+        plt.legend()
         stream.pyplot(clp2)
 
         stream.subheader("Closing Price Over Time w/ Moving Average of 100 & 200")
+        stream.write("The blue line represents the closing price over time. The green line represents the closing price over time with a moving average of 100. The red line represents the closing price over time with a moving average of 200.")
         moving_av_100 = frame.Close.rolling(100).mean()
         moving_av_200 = frame.Close.rolling(200).mean()
         clp3 = plt.figure(figsize = (14, 7))
-        plt.plot(moving_av_100, 'r')
-        plt.plot(moving_av_200, 'g')
-        plt.plot(frame.Close, 'b')
+        plt.plot(moving_av_100, 'g')
+        plt.plot(moving_av_200, 'r')
+        plt.plot(frame.Close)
         stream.pyplot(clp3)
 
         #split into training and testing
@@ -57,6 +58,7 @@ try:
         data_training_array = scaler.fit_transform(data_training)
 
         model = load_model('keras_model.h5')
+        model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mean_absolute_error'])
 
         past_100_days = data_training.tail(100)
         final_df = pd.concat([past_100_days, data_testing], ignore_index=True)
@@ -80,12 +82,11 @@ try:
 
         stream.subheader("Predicted Prices vs Original Prices")
         fnal_predictions = plt.figure(figsize=(12,6))
-        plt.plot(y_test, 'b', label = 'Original Price')
+        plt.plot(y_test, 'g', label = 'Original Price')
         plt.plot(y_predicted, 'r', label = 'Predicted Price')
-        plt.xlabel('Time')
+        plt.xlabel('Time (# of Trading Days)')
         plt.ylabel('Price')
         plt.legend()
-        plt.show()
         stream.pyplot(fnal_predictions)
 
     else:
